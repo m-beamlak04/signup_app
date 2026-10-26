@@ -52,8 +52,7 @@ class _SignupPageState extends State<SignupPage> {
       if (!mounted) return;
 
       setState(() {
-        _signupTip =
-        'Use a unique password for each account and avoid sharing it with others.';
+        _signupTip = 'Use a unique password for each account and avoid sharing it with others.';
       });
     } catch (error) {
       if (!mounted) return;
@@ -72,14 +71,16 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( // 👨 Parent
+    return Scaffold(
+      // 👨 Parent
       appBar: AppBar(
         title: const Text('Join Us Today for the Cash Money!'),
         backgroundColor: Colors.purple,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form( // 👶 Child
+        child: Form(
+          // 👶 Child
           key: _formKey,
           child: Column(
             children: [
@@ -153,7 +154,9 @@ class _SignupPageState extends State<SignupPage> {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Demo signup complete — your form passed validation!'),
+                        content: Text(
+                          'Demo signup complete — your form passed validation!',
+                        ),
                         backgroundColor: Colors.green,
                       ),
                     );
@@ -161,21 +164,18 @@ class _SignupPageState extends State<SignupPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.purple,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 12,
+                  ),
                 ),
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(fontSize: 18),
-                ),
+                child: const Text('Sign Up', style: TextStyle(fontSize: 18)),
               ),
               const SizedBox(height: 20),
 
               const Text(
                 'AI Signup Coach (Mock)',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 8),
@@ -196,10 +196,7 @@ class _SignupPageState extends State<SignupPage> {
                   child: Text(_signupTip!),
                 ),
               if (_tipError != null) ...[
-                Text(
-                  _tipError!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+                Text(_tipError!, style: const TextStyle(color: Colors.red)),
                 TextButton(
                   onPressed: _getSignupTip,
                   child: const Text('Retry'),
