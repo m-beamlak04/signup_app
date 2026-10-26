@@ -1,17 +1,7 @@
-# signup_app
+**Question 1: Trace the local tip feature from button tap to displayed text. Which widget/state changes during the simulated loading state, and how does the user recover from the local error case?**
 
-A new Flutter project.
+When the user presses the Get Signup Tip button, a loading circle appears for a quick second before the password advice shows up. During that time, the loading state changes and the button is disabled until the tip is ready. If it fails to load, a red error message appears with a Retry button that lets the user try again.
 
-## Getting Started
+**Question 2: Why must the app keep form validation local even when it can ask an AI for a tip? Give one example of a bad decision if AI were allowed to approve signup.**
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The app should keep form validation local because it needs to make sure the information entered meets the signup requirements. If AI were allowed to approve signup, it could incorrectly approve someone with an invalid email or a password that is too short. This would be a problem because the form doesn't actually meet the requirements, but the app could still say the signup was successful.
