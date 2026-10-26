@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Fun Signup App',
       theme: ThemeData(primarySwatch: Colors.purple),
       home: const SignupPage(),
@@ -167,6 +168,43 @@ class _SignupPageState extends State<SignupPage> {
                   style: TextStyle(fontSize: 18),
                 ),
               ),
+              const SizedBox(height: 20),
+
+              const Text(
+                'AI Signup Coach (Mock)',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              ElevatedButton.icon(
+                onPressed: _isTipLoading ? null : _getSignupTip,
+                icon: const Icon(Icons.lightbulb_outline),
+                label: const Text('Get Signup Tip'),
+              ),
+              if (_isTipLoading)
+                const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: CircularProgressIndicator(),
+                ),
+              if (_signupTip != null)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(_signupTip!),
+                ),
+              if (_tipError != null) ...[
+                Text(
+                  _tipError!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+                TextButton(
+                  onPressed: _getSignupTip,
+                  child: const Text('Retry'),
+                ),
+              ],
             ],
           ),
         ),
