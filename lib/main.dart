@@ -34,6 +34,41 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool _isTipLoading = false;
+  String? _signupTip;
+  String? _tipError;
+
+  Future<void> _getSignupTip() async {
+    setState(() {
+      _isTipLoading = true;
+      _signupTip = null;
+      _tipError = null;
+    });
+
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (!mounted) return;
+
+      setState(() {
+        _signupTip =
+        'Use a unique password for each account and avoid sharing it with others.';
+      });
+    } catch (error) {
+      if (!mounted) return;
+
+      setState(() {
+        _tipError = 'Could not load signup advice. Please try again.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isTipLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold( // 👨 Parent
