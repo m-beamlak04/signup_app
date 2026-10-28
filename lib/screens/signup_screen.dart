@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'success_screen.dart';
+
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -16,9 +18,14 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  DateTime? _birthDate;
+  final TextEditingController _dateController = TextEditingController();
+
   bool _isTipLoading = false;
   String? _signupTip;
   String? _tipError;
+  bool _obscurePassword = true;
+  bool _submitting = false;
 
   Future<void> _getSignupTip() async {
     setState(() {
@@ -48,6 +55,32 @@ class _SignupPageState extends State<SignupPage> {
         });
       }
     }
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _submitting = true); // potion starts brewing
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return; // user may have left the screen
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SuccessScreen(userName: _nameController.text.trim()),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _dateController.dispose();
+    super.dispose();
   }
 
   @override
@@ -111,11 +144,23 @@ class _SignupPageState extends State<SignupPage> {
               // 🔒 Password Field
               TextFormField(
                 controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
                   labelText: 'Password',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -127,30 +172,53 @@ class _SignupPageState extends State<SignupPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                controller: _dateController,
+                readOnly: true, // taps open the picker, not the keyboard
+                decoration: const InputDecoration(
+                  labelText: 'Birth Date',
+                  prefixIcon: Icon(Icons.cake),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (_) =>
+                    _birthDate == null ? 'Pick your birth date' : null,
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime(2008),
+                    firstDate: DateTime(1920),
+                    lastDate: DateTime.now(), // no future birthdays!
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      _birthDate = picked;
+                      _dateController.text =
+                          '${picked.month}/${picked.day}/${picked.year}';
+                    });
+                  }
+                },
+              ),
+
               const SizedBox(height: 24),
 
               // 🚀 Sign Up Button
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Demo signup complete — your form passed validation!',
+                onPressed: _submitting ? null : _submit, // null = disabled
+                child: _submitting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
                         ),
-                        backgroundColor: Colors.green,
+                      )
+                    : const Text(
+                        'Join the Mansion',
+                        style: TextStyle(fontSize: 18),
                       ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 12,
-                  ),
-                ),
-                child: const Text('Sign Up', style: TextStyle(fontSize: 18)),
               ),
               const SizedBox(height: 20),
 
